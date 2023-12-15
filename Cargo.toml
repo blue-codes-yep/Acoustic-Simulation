@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 cpal = { version = "*", features = ["asio"] }
+rapier3d = { version = "*", features = [ "simd-stable" ] }
