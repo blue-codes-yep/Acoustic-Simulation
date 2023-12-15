@@ -6,7 +6,13 @@ pub struct SoundWave {
 }
 
 pub enum Material {
-    Wood,
-    Metal,
-    Glass,
+    Wood {
+        absorption_coefficient: f32,
+    },
+    Metal {
+        absorption_coefficient: f32,
+    },
+    Glass {
+        absorption_coefficient: f32,
+    },
 }
