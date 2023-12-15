@@ -1,12 +1,25 @@
-use cpal::traits::StreamTrait;
-use cpal::traits::{DeviceTrait, HostTrait};
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{Stream, StreamConfig};
-use std::sync::Arc; // Import the StreamTrait trait
+use rapier3d::math::Vector;
+use std::sync::Arc;
 
-pub fn generate_wave(sample_rate: f32, frequency: f32, volume: f32) -> Vec<f32> {
+use crate::models::models::SoundWave; // Import the StreamTrait trait
+
+pub fn generate_wave(sample_rate: f32, frequency: f32, volume: f32, position: Vector<f32>) -> Vec<f32> {
+    
+    SoundWave {
+        frequency,
+        amplitude: volume,
+        direction: 1.0,
+        position: Vector::new(0.0, 0.0, 0.0),
+    };
+
+
     let phase_inc = 2.0 * std::f32::consts::PI * frequency / sample_rate;
     let mut phase: f32 = 0.0;
-
+    let amplitude: f32 = volume;  // Example calculation for amplitude
+    let direction = Vector::new(1.0, 0.0, 0.0);  // Example default direction
+    let position: rapier3d::prelude::nalgebra::Matrix<f64, rapier3d::prelude::nalgebra::Const<3>, rapier3d::prelude::nalgebra::Const<1>, rapier3d::prelude::nalgebra::ArrayStorage<f64, 3, 1>> = Vector::new(0.0, 0.0, 0.0);  // Example default position
     let mut wave = Vec::new();
     for _ in 0..(sample_rate as usize) {
         let value = volume * phase.sin();

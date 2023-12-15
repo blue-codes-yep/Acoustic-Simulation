@@ -6,6 +6,7 @@ pub struct SoundWave {
     pub frequency: f32,
     pub amplitude: f32,
     pub direction: f32,
+    pub position: Vector<f32>,
 }
 
 #[derive(Clone)]

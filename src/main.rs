@@ -1,32 +1,41 @@
-use sound::sound::generate_wave;
-use sound::sound::play_wave;
+// main.rs
+
+use sound::sound::{generate_wave, play_wave};
+use models::models::{SoundWave, Material};
 #[cfg(test)]
 mod tests;
 mod engine;
 mod models;
 mod sound;
+use crate::models::models::Engine;
+use std::thread;
+use rapier3d::math::Vector;
 
 fn main() {
-    // The sample rate and channel count are taken from the default output format
-    let sample_rate = 44100.0; // Replace with your desired sample rate
+    // Initialize the physics engine
+    let mut engine = Engine::new();
 
-    // The frequency of the sine wave in Hz
+    // Define the simulation area
+    // Example: Creating a simple room with walls and a floor
+    // Note: You need to replace these with actual calls to create and add these objects in Rapier3D
+    engine.create_room(10.0, 10.0, 10.0); // Room dimensions (width, height, depth)
+
+    // Generate a sound wave
+    let sample_rate = 44100.0;
     let frequency = 528.0;
+    // ...
+    let mut wave: Vec<f32> = generate_wave(44100.0, 528.0, 0.5, Vector::new(0.0, 0.0, 0.0));
+    // ...
 
-    // The volume of the sine wave
-    let volume = 0.5;
+    // Open the physics engine in a GUI
+    // engine.open_gui();
 
-    let wave = generate_wave(sample_rate, frequency, volume);
-
-    let stream_result = play_wave(wave);
-
-    match stream_result {
-        Ok(_stream) => {
-            // Sleep for a while so we can hear the sound
-            std::thread::sleep(std::time::Duration::from_secs(2));
-        },
-        Err(e) => {
-            eprintln!("Error playing wave: {:?}", e);
-        },
+    // Play the sound wave
+    match play_wave(wave.to_vec()) {
+        Ok(_) => println!("Sound played successfully."),
+        Err(e) => eprintln!("Error playing sound: {:?}", e),
     }
+
+    // Sleep to allow sound playback
+    std::thread::sleep(std::time::Duration::from_secs(30));
 }

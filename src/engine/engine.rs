@@ -29,12 +29,28 @@ pub fn interact(wave: &SoundWave, material: &Material) -> SoundWave {
         frequency: wave.frequency,
         amplitude: reflected_amplitude,
         direction: wave.direction,
+        position: wave.position,
     }
 }
 
 
 // Implementation of Engine struct for physics simulation
 impl Engine {
+    pub fn interact_mapping(&self, wave: &SoundWave, material: &Material) -> SoundWave {
+        // Determine the absorption coefficient of the material
+        let absorption_coefficient = material.absorption_coefficient();
+
+        // Calculate the reflected amplitude
+        let reflected_amplitude = wave.amplitude * (1.0 - absorption_coefficient);
+
+        // Create a new sound wave with the reflected amplitude
+        SoundWave {
+            frequency: wave.frequency,
+            amplitude: reflected_amplitude,
+            direction: wave.direction,
+            position: wave.position,
+        }
+    }
     pub fn new() -> Self {
         let gravity = Vector::new(0.0, -9.81, 0.0);
         let physics = PhysicsPipeline::new();
