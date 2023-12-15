@@ -18,8 +18,15 @@ fn main() {
 
     let wave = generate_wave(sample_rate, frequency, volume);
 
-    if let Err(e) = play_wave(wave) {
-        eprintln!("Error playing wave: {:?}", e);
+    let stream_result = play_wave(wave);
+
+    match stream_result {
+        Ok(_stream) => {
+            // Sleep for a while so we can hear the sound
+            std::thread::sleep(std::time::Duration::from_secs(2));
+        },
+        Err(e) => {
+            eprintln!("Error playing wave: {:?}", e);
+        },
     }
-    
 }

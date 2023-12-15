@@ -1,8 +1,7 @@
+use cpal::traits::StreamTrait;
 use cpal::traits::{DeviceTrait, HostTrait};
 use cpal::{Stream, StreamConfig};
-use std::sync::Arc;
-
-
+use std::sync::Arc; // Import the StreamTrait trait
 
 pub fn generate_wave(sample_rate: f32, frequency: f32, volume: f32) -> Vec<f32> {
     let phase_inc = 2.0 * std::f32::consts::PI * frequency / sample_rate;
@@ -19,8 +18,12 @@ pub fn generate_wave(sample_rate: f32, frequency: f32, volume: f32) -> Vec<f32> 
 }
 
 pub fn play_wave(wave: Vec<f32>) -> Result<Stream, Box<dyn std::error::Error>> {
+    println!("Starting play_wave function"); // Add debug print
+
     let host = cpal::default_host();
-    let device = host.default_output_device().expect("no output device available");
+    let device = host
+        .default_output_device()
+        .expect("no output device available");
 
     let config = StreamConfig {
         channels: 2,
@@ -34,6 +37,7 @@ pub fn play_wave(wave: Vec<f32>) -> Result<Stream, Box<dyn std::error::Error>> {
     let stream = device.build_output_stream(
         &config,
         move |data: &mut [f32], _: &cpal::OutputCallbackInfo| {
+            println!("Playing wave"); // Add debug print
             for (frame, sample) in data.chunks_mut(2).zip(wave_clone.iter().cycle()) {
                 for frame_sample in frame.iter_mut() {
                     *frame_sample = *sample;
@@ -47,7 +51,14 @@ pub fn play_wave(wave: Vec<f32>) -> Result<Stream, Box<dyn std::error::Error>> {
     );
 
     match stream {
-        Ok(s) => Ok(s),
-        Err(e) => Err(Box::new(e)), // Convert the error into a Box<dyn Error>
+        Ok(s) => {
+            println!("Stream created successfully");
+            s.play()?; // Play the stream
+            Ok(s)
+        }
+        Err(e) => {
+            println!("Failed to create stream");
+            Err(Box::new(e))
+        }
     }
 }
